@@ -1,0 +1,16 @@
+{
+  "name": "possess",
+  "version": "0.1.0",
+  "description": "POSSESS v0.1.0 - \ud6a1\uc2a4\ud06c\ub864 \uae30\uc0dd \ud50c\ub7ab\ud3ec\uba38",
+  "main": "www/index.html",
+  "scripts": {
+    "build": "echo 'POSSESS build'",
+    "android": "npx cap add android && npx cap sync && npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor-community/admob": "^6.0.0"
+  },
+  "author": "woojik01"
+}
