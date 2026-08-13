@@ -3,72 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>POSSESS v0.1.0</title>
+<title>POSSESS v0.1.1 - PWA</title>
 <meta name="theme-color" content="#0a0a0a">
-<link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="POSSESS">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="game-wrap">
-  <canvas id="gameCanvas"></canvas>
-  <div id="ui-top">
-    <div id="ui-left">
-      <div class="bar-label">기생충</div>
-      <div class="bar"><div id="hp-fill" class="fill parasite"></div></div>
-      <div id="host-ui" style="display:none">
-        <div class="bar-label"><span id="host-name">숙주</span> <small id="host-ability"></small></div>
+  <div id="canvas-wrap"><canvas id="gameCanvas" width="960" height="540"></canvas></div>
+
+  <div id="hud">
+    <div class="hud-card">
+      <div class="hud-row"><img id="hud-parasite-icon" src="assets/sprites/parasite.png" class="hud-icon"><span>THE WORM</span><span id="hp-text">30/30</span></div>
+      <div class="bar"><div id="hp-fill" class="fill parasite"></div><div id="hp-ghost"></div></div>
+      <div id="host-ui" class="hidden">
+        <div class="hud-row"><img id="hud-host-icon" src="" class="hud-icon"><span id="host-name">CRAWL</span><span id="host-hp-text">65/65</span></div>
         <div class="bar"><div id="host-hp-fill" class="fill host"></div></div>
+        <div id="host-ability" class="ability-badge"></div>
       </div>
     </div>
-    <div id="ui-right">
-      <div id="score">처치: <span id="score-val">0</span></div>
-      <div id="zone">ZONE: <span id="zone-val">1-1</span></div>
-      <button id="settings-btn">⚙</button>
+    <div class="hud-card right">
+      <div class="stat"><span class="stat-label">처치</span><span id="score-val">0</span></div>
+      <div class="stat"><span class="stat-label">ZONE</span><span id="zone-val">1-1</span></div>
+      <div class="stat"><span class="stat-label">사망</span><span id="death-count-hud">0</span></div>
+      <button id="settings-btn" title="설정">⚙</button>
     </div>
   </div>
+
   <div id="controls">
-    <div id="joy-area"><div id="joy-base"><div id="joy-stick"></div></div></div>
+    <div id="joy-area"><div id="joy-base"><div id="joy-stick"></div></div><span class="ctrl-label">MOVE</span></div>
     <div id="btn-area">
-      <button class="gbtn" id="btn-jump">JUMP<br>↑</button>
-      <button class="gbtn" id="btn-attack">ATK</button>
-      <button class="gbtn" id="btn-eject">EJECT</button>
+      <button class="gbtn" id="btn-jump"><span>↑</span><small>JUMP</small></button>
+      <button class="gbtn attack" id="btn-attack"><span>◯</span><small>ATK / 기생</small></button>
+      <button class="gbtn eject" id="btn-eject"><span>⎋</span><small>EJECT</small></button>
     </div>
   </div>
+
   <div id="settings-modal" class="modal hidden">
     <div class="modal-box">
-      <h2>POSSESS v0.1.0</h2>
-      <p class="small">com.woojik01.possess / 횡스크롤 기생 플랫포머</p>
-      <label class="toggle"><input type="checkbox" id="autoaim-toggle" checked> 오토에임 (가장 가까운 적 자동 조준)</label>
-      <label class="toggle"><input type="checkbox" id="pixel-toggle" checked> 픽셀 스냅</label>
+      <h2>POSSESS v0.1.1</h2>
+      <p class="small">com.woojik01.possess / PWA + 전면 스프라이트 교체</p>
+      <div class="opt"><label><input type="checkbox" id="autoaim-toggle" checked> 오토에임 (가장 가까운 적)</label></div>
+      <div class="opt"><label><input type="checkbox" id="pixel-toggle" checked> 픽셀 필터 (crisp)</label></div>
+      <div class="opt"><label><input type="checkbox" id="vibration-toggle" checked> 진동 피드백</label></div>
+      <div class="opt small">해상도: <span id="res-info">960x540</span> / DPR: <span id="dpr-info"></span></div>
       <button id="close-settings" class="mbtn">닫기</button>
     </div>
   </div>
+
   <div id="death-modal" class="modal hidden">
     <div class="modal-box">
-      <h1 id="death-title">죽었다</h1>
-      <p>기생충이 터졌다...</p>
+      <h1>💀 사망</h1>
+      <p>기생충이 터졌다. 숙주를 잃었다.</p>
       <p>누적 사망: <span id="death-count">0</span> / 3마다 전면광고</p>
       <div id="ad-sim" class="ad-box hidden">
         <p>📺 전면 광고 재생 중... (시뮬레이션)</p>
         <div class="ad-progress"><div id="ad-progress-fill"></div></div>
-        <small>AdMob: ca-app-pub-3940256099942544/1033173712</small>
       </div>
       <div class="btn-row">
-        <button id="respawn-btn" class="mbtn primary">다시 시작</button>
-        <button id="reward-btn" class="mbtn reward">📺 광고 보고 부활</button>
+        <button id="respawn-btn" class="mbtn primary">다시 시작 (ZONE 1)</button>
+        <button id="reward-btn" class="mbtn reward">📺 광고 보고 현재 위치 부활</button>
       </div>
     </div>
   </div>
-  <div id="boss-banner" class="hidden">BOSS</div>
+
+  <div id="boss-banner" class="hidden"><span id="boss-name">BOSS</span><div class="boss-sub">기생 불가</div></div>
+  <div id="toast" class="hidden"></div>
 </div>
+
 <script src="js/admob.js"></script>
 <script src="js/game.js"></script>
 <script>
-if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("./sw.js").then(reg=>console.log("PWA SW registered",reg.scope)).catch(err=>console.log("SW fail",err)); }); }
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("./sw.js").then(r=>console.log("PWA",r.scope)).catch(e=>console.log(e)); }); }
 </script>
 </body>
 </html>
